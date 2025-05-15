@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 Nx, Ny = 100, 100
 dx = 0.01  # 1 cm Auflösung
 dt = dx / (np.sqrt(2) * 343)  # CFL-Bedingung
-steps = 500
+steps = 250
 
 # Druckfelder
 p = np.zeros((Nx, Ny))
@@ -30,7 +30,7 @@ for t in range(steps):
 
     p_old, p = p, p_new.copy()
 
-    if t % 50 == 0:
+    if t % 5 == 0:
         plt.imshow(p, cmap='RdBu', vmin=-0.01, vmax=0.01)
         plt.title(f"t = {t}")
         plt.pause(0.01)
