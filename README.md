@@ -1,2 +1,2 @@
-# PySST
-Python Speaker Simulation Toolbox
+# PySSE
+Python Speaker Simulation Enviroment
