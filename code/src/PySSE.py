@@ -1,1 +1,2 @@
-#contains the PySST class
+#contains the PySSE class
+
