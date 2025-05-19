@@ -17,11 +17,46 @@ class PySSe:
         self.steps = 100  #number of time steps
         #self.dt=0  #time step
         self.dt = self.dx/(np.sqrt(2) * self.v_sound)  # CFL-Bedingung
-
+        self.objects = []  #list of objects in the container
         pass
 
-    def example_method(self):
-        """
-        An example method that does nothing.
-        """
-        pass
+    #write getters and setters for all attributes
+    def get_x(self):
+        return self.x
+
+    def set_x(self, x):
+        self.x = x
+
+    def get_y(self):
+        return self.y
+
+    def set_y(self, y):
+        self.y = y
+
+    def get_dx(self):
+        return self.dx
+
+    def set_dx(self, dx):
+        self.dx = dx
+
+    def get_v_sound(self):
+        return self.v_sound
+
+    def set_v_sound(self, v_sound):
+        self.v_sound = v_sound
+
+    def get_steps(self):
+        return self.steps
+
+    def set_steps(self, steps):
+        self.steps = steps
+
+    def get_dt(self):
+        return self.dt
+
+    def set_dt(self, dt):
+        self.dt = dt
+
+    def run_sim(self):
+        #runs the simulation in respect to all lines
+        return

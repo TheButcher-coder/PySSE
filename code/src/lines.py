@@ -1,1 +1,39 @@
 #contains line objects for reflections
+import numpy as np
+class Line:
+    """
+    A class to handle lines in the simulation.
+    """
+
+    def __init__(self, x1, y1, x2, y2):
+        """
+        Initialize the Line class.
+        """
+        self.x1 = x1  # x-coordinate of the first point
+        self.y1 = y1  # y-coordinate of the first point
+        self.x2 = x2  # x-coordinate of the second point
+        self.y2 = y2  # y-coordinate of the second point
+
+    def get_x1(self):
+        return self.x1
+    def set_x1(self, x1):
+        self.x1 = x1
+    def get_y1(self):
+        return self.y1
+    def set_y1(self, y1):
+        self.y1 = y1
+    def get_x2(self):
+        return self.x2
+    def set_x2(self, x2):
+        self.x2 = x2
+    def get_y2(self):
+        return self.y2
+
+    def get_normal(self):
+        """
+        Calculate the normal vector of the line.
+        """
+        dx = self.x2 - self.x1
+        dy = self.y2 - self.y1
+        length = np.sqrt(dx**2 + dy**2)
+        return np.array([-dy / length, dx / length])
