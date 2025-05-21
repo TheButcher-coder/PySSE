@@ -1,5 +1,6 @@
 #contains line objects for reflections
 import numpy as np
+import matplotlib.pyplot as plt
 class Line:
     """
     A class to handle lines in the simulation.
@@ -37,3 +38,9 @@ class Line:
         dy = self.y2 - self.y1
         length = np.sqrt(dx**2 + dy**2)
         return np.array([-dy / length, dx / length])
+
+    def print(self, c):
+        """
+        Plot the line from point 1 to point 2 with the specified color.
+        """
+        plt.plot([self.x1, self.x2], [self.y1, self.y2], color=c)

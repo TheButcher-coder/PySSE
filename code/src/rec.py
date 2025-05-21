@@ -1,5 +1,5 @@
 import numpy as np
-import lines as l
+from . import Line as line
 
 class rec:
     """
@@ -12,21 +12,17 @@ class rec:
         """
         #do it with lines instead
         self.lines = []
-        self.lines.append(l.Line(x1, y1, x2, y1))
-        self.lines.append(l.Line(x2, y1, x2, y2))
-        self.lines.append(l.Line(x2, y2, x1, y2))
-        self.lines.append(l.Line(x1, y2, x1, y1))
-
-    def __init__(self, l1, l2, l3, l4):
-        """
-        Initialize the Rectangle class.
-        """
-        #do it with lines instead
-        self.lines = []
-        self.lines.append(l1)
-        self.lines.append(l2)
-        self.lines.append(l3)
-        self.lines.append(l4)
+        self.lines.append(line.Line(x1, y1, x2, y1))
+        self.lines.append(line.Line(x2, y1, x2, y2))
+        self.lines.append(line.Line(x2, y2, x1, y2))
+        self.lines.append(line.Line(x1, y2, x1, y1))
 
     def get_lines(self):
         return self.lines
+
+    def print(self, c):
+        """
+        Plot the rectangle with the specified color.
+        """
+        for line in self.lines:
+            line.print(c)

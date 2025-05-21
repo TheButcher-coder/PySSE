@@ -1,5 +1,7 @@
 #contains the PySSE class
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 class PySSe:
     """
@@ -10,6 +12,7 @@ class PySSe:
         """
         Initialize the PySSE class.
         """
+        plt.axis('equal')
         self.x=100   #xsize of container
         self.y=100   #ysize of container
         self.dx=0.1  #resolution of grid
@@ -56,6 +59,18 @@ class PySSe:
 
     def set_dt(self, dt):
         self.dt = dt
+
+
+    def add_obj(self, obj):
+        #adds an object to the container
+        self.objects.append(obj)
+
+    def print(self):
+        #prints the objects in the container
+        for obj in self.objects:
+            obj.print('blue')
+        plt.show()
+
 
     def run_sim(self):
         #runs the simulation in respect to all lines
