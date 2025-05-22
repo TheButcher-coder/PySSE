@@ -34,5 +34,6 @@ for t in range(steps):
         plt.imshow(p, cmap='RdBu', vmin=-0.01, vmax=0.01)
         plt.title(f"t = {t}")
         plt.pause(0.01)
+        p.print()
 
 plt.show()

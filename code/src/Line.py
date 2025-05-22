@@ -39,6 +39,15 @@ class Line:
         length = np.sqrt(dx**2 + dy**2)
         return np.array([-dy / length, dx / length])
 
+    def get_points(self, dx):
+        """
+        Get the points of the line.
+        """
+        x_vals = np.arange(self.x1, self.x2, dx)
+        y_vals = np.arange(self.y1, self.y2, dx)
+        return x_vals, y_vals
+
+
     def print(self, c):
         """
         Plot the line from point 1 to point 2 with the specified color.

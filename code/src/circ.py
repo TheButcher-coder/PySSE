@@ -26,6 +26,24 @@ class circ:
     def get_r(self):
         return self.r
 
+    def get_normal(self, x, y):
+        """
+        Calculate the normal vector at a point on the circle.
+        """
+        # Normalize the vector from the center to the point
+        norm = np.array([x - self.x, y - self.y])
+        norm /= np.linalg.norm(norm)
+        return norm
+
+    def get_points(self, dx):
+        """
+        Get the points of the circle.
+        """
+        phi = np.arange(0, self.dphi, dx)  # Generate angles from 0 to dphi
+        x_vals = self.x + self.r * np.cos(phi + self.rot)
+        y_vals = self.y + self.r * np.sin(phi + self.rot)
+        return x_vals, y_vals
+
     def print(self, c):
         """
         Plot the circle (or part of it) with the specified color.

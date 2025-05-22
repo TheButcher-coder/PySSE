@@ -20,6 +20,16 @@ class rec:
     def get_lines(self):
         return self.lines
 
+    def get_points(self, dx):
+        """
+        Get the points of the rectangle.
+        """
+        x, y = [], []
+        for l in self.lines:
+            x_vals, y_vals = l.get_points(dx)
+            x.append(x_vals)
+            y.append(y_vals)
+        return x, y
     def print(self, c):
         """
         Plot the rectangle with the specified color.
