@@ -1,7 +1,7 @@
 #contains the PySSE class
-import Line
-import circ
-import rec
+from . import Line
+from . import circ
+from . import rec
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,12 +45,14 @@ class PySSe:
 
     def set_dx(self, dx):
         self.dx = dx
+        self.dt = self.dx / (np.sqrt(2) * self.v_sound)  # CFL-Bedingung
 
     def get_v_sound(self):
         return self.v_sound
 
     def set_v_sound(self, v_sound):
         self.v_sound = v_sound
+        self.dt = self.dx / (np.sqrt(2) * self.v_sound)  # CFL-Bedingung
 
     def get_steps(self):
         return self.steps
@@ -73,7 +75,7 @@ class PySSe:
         #prints the objects in the container
         for obj in self.objects:
             obj.print('blue')
-        plt.show()
+        #plt.show()
 
     def get_angle(self, v1, v2):
         return np.arccos(v1@v2/(np.linalg.norm(v1)*np.linalg.norm(v2)))
@@ -86,35 +88,41 @@ class PySSe:
             x_obj, y_obj = obj.get_points(self.dx)
             for i in range(len(x_obj)):
                 if x_obj[i] == x and y_obj[i] == y:
-                    return True
-        return False
+                    return obj
+        return None
 
-    def mirror_point(self, v, p1, n, p2):
+    def mirror_point(self, v, p, n):
         '''
         Mirrors the vector at the point p1 at the line defined by p2 and n.
         :param v: vector
-        :param p1: base point of vector
+        :param p: base point of vector
         :param n: second vector
-        :param p2: base point of second vector
         :return:
         '''
         alpha = self.get_angle(v, n)
-        T = np.array([[np.cos(alpha), -np.sin(alpha), n[0]], [np.sin(alpha), np.cos(alpha), n[1]], [0, 0, 1]])
+        T = np.array([[np.cos(alpha), -np.sin(alpha), p[0]],
+                      [np.sin(alpha), np.cos(alpha), p[1]],
+                      [0, 0, 1]])
         v_m = T @ np.array([v[0], v[1], 1])
-        v_m[0] = -v_m[0] #mirror along x axes
         v_m[1] = -v_m[1]
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
     def run_sim(self):
         steps = 250
-        p = np.zeros((self.x, self.y))
-        p_old = np.zeros((self.x, self.y))
-        p_new = np.zeros((self.x, self.y))
+        p = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
+        p_old = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
+        p_new = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
         for t in range(steps):
             for i in range(1, self.x - 1):
                 for j in range(1, self.y - 1):
                     laplacian = (p[i + 1, j] + p[i - 1, j] + p[i, j + 1] + p[i, j - 1] - 4 * p[i, j]) / self.dx ** 2
                     p_new[i, j] = 2 * p[i, j] - p_old[i, j] + (343 ** 2) * self.dt ** 2 * laplacian
+
+            # check for collisions with objects
+                    temp = self.does_collide(i, j)
+                    if temp is not None:
+                        # get the normal vector of the line
+                        self.mirror_point(p_new, np.array([i, j]), temp.get_normal(self.dx))
 
             # Quelle als kurzer Impuls
             if t < 5:

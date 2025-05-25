@@ -6,8 +6,11 @@ from src.rec import rec
 
 
 p = piss.PySSe()
-p.add_obj(rec(-1, -1, 1, 1))
-p.add_obj(circ(0, 0, 1, np.pi, np.pi))
+p.set_x(4)
+p.set_y(4)
+p.set_dx(.1)
+#p.add_obj(rec(-1, -1, 1, 1))
+p.add_obj(circ(0, 0, 100, np.pi, np.pi))
 #p.add_obj(l.Line(-1, 0, 1, 0))
 p.print()
 
