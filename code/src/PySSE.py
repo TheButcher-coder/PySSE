@@ -122,7 +122,7 @@ class PySSe:
                     temp = self.does_collide(i, j)
                     if temp is not None:
                         # get the normal vector of the line
-                        self.mirror_point(p_new, np.array([i, j]), temp.get_normal(self.dx))
+                        self.mirror_point(p_new[i, j], np.array([i, j]), temp.get_normal()) #TODO ,ale work with circ
 
             # Quelle als kurzer Impuls
             if t < 5:
