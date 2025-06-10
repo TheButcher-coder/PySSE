@@ -6,12 +6,11 @@ from src.rec import rec
 
 
 p = piss.PySSe()
-p.set_x(100)
-p.set_y(100)
+p.set_x(10)
+p.set_y(10)
 p.set_dx(.1)
 
-p.add_obj(Line(00, 0, 100, 100))
+p.add_obj(circ(0, 0, 3, 2*np.pi))
 
-p.print()
 
 p.run_sim()

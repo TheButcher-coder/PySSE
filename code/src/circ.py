@@ -52,3 +52,10 @@ class circ:
         x_vals = self.x + self.r * np.cos(phi + self.rot)  # x-coordinates
         y_vals = self.y + self.r * np.sin(phi + self.rot)  # y-coordinates
         plt.plot(x_vals, y_vals, color=c)
+
+
+    def get_mask(self, nx, ny, dx):
+        x_coords = np.arange(nx) * dx
+        y_coords = np.arange(ny) * dx
+        X, Y = np.meshgrid(x_coords, y_coords, indexing='ij')
+        return (X - self.x) ** 2 + (Y - self.y) ** 2 <= self.r ** 2

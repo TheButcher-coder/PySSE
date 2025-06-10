@@ -36,3 +36,10 @@ class rec:
         """
         for line in self.lines:
             line.print(c)
+
+    def get_mask(self, nx, ny, dx):
+        x_coords = np.arange(nx) * dx
+        y_coords = np.arange(ny) * dx
+        X, Y = np.meshgrid(x_coords, y_coords, indexing='ij')
+        return (X >= self.x) & (X <= self.x + self.w) & \
+            (Y >= self.y) & (Y <= self.y + self.h)

@@ -108,30 +108,53 @@ class PySSe:
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
     def run_sim(self):
-        steps = 250
-        p = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
-        p_old = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
-        p_new = np.zeros((int(self.x/self.dx), int(self.y/self.dx)))
-        for t in range(steps):
-            for i in range(1, self.x - 1):
-                for j in range(1, self.y - 1):
-                    laplacian = (p[i + 1, j] + p[i - 1, j] + p[i, j + 1] + p[i, j - 1] - 4 * p[i, j]) / self.dx ** 2
-                    p_new[i, j] = 2 * p[i, j] - p_old[i, j] + (343 ** 2) * self.dt ** 2 * laplacian
+        # Korrekte Gitterdimensionen berechnen
+        nx = int(self.x / self.dx)
+        ny = int(self.y / self.dx)
 
-            # check for collisions with objects
-                    temp = self.does_collide(i, j)
-                    if temp is not None:
-                        # get the normal vector of the line
-                        self.mirror_point(p_new[i, j], np.array([i, j]), temp.get_normal()) #TODO ,ale work with circ
+        # Maske für solide Objekte erstellen
+        solid_mask = np.zeros((nx, ny), dtype=bool)
+        for obj in self.objects:
+            obj_mask = obj.get_mask(nx, ny, self.dx)
+            solid_mask = np.logical_or(solid_mask, obj_mask)
 
-            # Quelle als kurzer Impuls
+        # Druckfelder initialisieren
+        p = np.zeros((nx, ny))
+        p_old = np.zeros((nx, ny))
+        p_new = np.zeros((nx, ny))
+
+        # Position der Quelle
+        i_source = nx // 2
+        j_source = ny // 2
+
+        # Quelle darf nicht in solidem Objekt sein
+        if solid_mask[i_source, j_source]:
+            raise ValueError("Quelle befindet sich in einem Objekt!")
+
+        for t in range(self.steps):
+            for i in range(1, nx - 1):
+                for j in range(1, ny - 1):
+                    # Wellengleichung lösen
+                    laplacian = (p[i + 1, j] + p[i - 1, j] +
+                                 p[i, j + 1] + p[i, j - 1] -
+                                 4 * p[i, j]) / self.dx ** 2
+                    p_new[i, j] = (2 * p[i, j] - p_old[i, j] +
+                                   self.v_sound ** 2 * self.dt ** 2 * laplacian)
+
+            # Quelle anregen (nur in den ersten 5 Schritten)
             if t < 5:
-                p_new[self.x//2, self.y//2] += np.sin(2 * np.pi * 500 * self.dt * t)
+                p_new[i_source, j_source] += np.sin(2 * np.pi * 500 * self.dt * t)
 
+            # Druck in soliden Bereichen auf Null setzen
+            p_new[solid_mask] = 0
+
+            # Felder aktualisieren
             p_old, p = p, p_new.copy()
 
+            # Visualisierung
             if t % 5 == 0:
-                plt.imshow(p, cmap='RdBu', vmin=-0.01, vmax=0.01)
+                plt.cla()
+                plt.imshow(p.T, cmap='RdBu', vmin=-0.01, vmax=0.01, origin='lower')
                 plt.title(f"t = {t}")
                 plt.pause(0.01)
                 self.print()

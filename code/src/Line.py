@@ -53,3 +53,13 @@ class Line:
         Plot the line from point 1 to point 2 with the specified color.
         """
         plt.plot([self.x1, self.x2], [self.y1, self.y2], color=c)
+
+    def get_mask(self, nx, ny, dx):
+        mask = np.zeros((nx, ny), dtype=bool)
+        x_points, y_points = self.get_points(dx)
+        for x, y in zip(x_points, y_points):
+            i = int(x / dx)
+            j = int(y / dx)
+            if 0 <= i < nx and 0 <= j < ny:
+                mask[i, j] = True
+        return mask
