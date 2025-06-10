@@ -2,6 +2,7 @@
 from . import Line
 from . import circ
 from . import rec
+from . import Mic as Mic
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -156,8 +157,24 @@ class PySSe:
                 plt.cla()
                 plt.imshow(p.T, cmap='RdBu', vmin=-0.01, vmax=0.01, origin='lower')
                 plt.title(f"t = {t}")
-                plt.pause(0.01)
+                plt.plot(self.mic.get_x(), self.mic.get_y(), 'ro')  # Plot microphone position
                 self.print()
+
+                plt.pause(0.01)
+
+            self.mic.add_data(p[self.mic.get_x(), self.mic.get_y()])
 
         plt.show()
         return
+
+    def add_mic(self, x, y):
+        self.mic = Mic.Mic(x, y)
+
+    def plot_mic_data(self):
+        """
+        Plot the data collected by the microphone.
+        """
+        if hasattr(self, 'mic'):
+            self.mic.plot_data()
+        else:
+            print("No microphone data to plot.")
