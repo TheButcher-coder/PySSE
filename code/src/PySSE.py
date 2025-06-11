@@ -134,9 +134,18 @@ class PySSe:
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
     def run_sim(self, inp_fun=lambda t:np.sin(2*np.pi*t), plot=True):
+        '''
+        Runs the simulation of the sound wave propagation in the container.
+        :param inp_fun:
+        :param plot:
+        :return: input vector that was used
+        '''
+
         # Korrekte Gitterdimensionen berechnen
         nx = int(self.x / self.dx)
         ny = int(self.y / self.dx)
+
+        inp_vec = np.array([])
 
         # Maske für solide Objekte erstellen
         solid_mask = np.zeros((nx, ny), dtype=bool)
@@ -168,8 +177,10 @@ class PySSe:
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
             # Quelle anregen (nur in den ersten 5 Schritten)
+            temp = inp_fun(t/self.dt)
+            p_new[i_source, j_source] += temp
+            inp_vec = np.append(inp_vec, temp)
 
-            p_new[i_source, j_source] += inp_fun(t/self.dt)
 
             # Druck in soliden Bereichen auf Null setzen
             p_new[solid_mask] = 0
@@ -190,7 +201,7 @@ class PySSe:
             self.mic.add_data(p[self.mic.get_x(), self.mic.get_y()])
 
         plt.show()
-        return
+        return inp_vec
 
 
 
@@ -239,3 +250,12 @@ class PySSe:
             print("No microphone data to perform a sweep.")
             return None
 
+    def get_mic_data(self):
+        """
+        Get the microphone data.
+        """
+        if hasattr(self, 'mic'):
+            return self.mic.get_data()
+        else:
+            print("No microphone data available.")
+            return None

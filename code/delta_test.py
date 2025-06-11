@@ -24,7 +24,7 @@ p.set_y(10)
 p.set_dx(.1)
 p.set_source_x(5)
 p.set_source_y(5)
-p.set_tmax(500)
+p.set_tmax(10000)
 
 #small example with bass reflex housing
 p.add_obj(Line(1, 1, 6, 1))  # bottom
@@ -34,10 +34,17 @@ p.add_obj(Line(6, 6, 1, 6))  # top
 p.add_obj(Line(1, 6, 1, 1))  # left side
 p.add_mic(70, 15)
 
-p.run_sim(inp_fun=delta, plot=False)
-p.plot_mic_data()
-data, freq = p.get_freq()
+x = p.run_sim(inp_fun=delta, plot=False)
+y = p.get_mic_data()
 
-plt.plot(freq, data)
+datax = np.fft.fft(x)
+fx = np.fft.fftfreq(x.shape[-1], d=p.get_dt())
+datay = np.fft.fft(y)
+fy = np.fft.fftfreq(y.shape[-1], d=p.get_dt())
+
+G = datay / datax
+plt.semilogx(fx, 20* np.log10(np.abs(G)), label='Gain')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Gain (dB)')
 plt.grid()
 plt.show()
