@@ -11,7 +11,7 @@ def delta(t):
     """
     Delta function for the source.
     """
-    amp = 1
+    amp = 100
     if t == 0:
         return amp
     else:
@@ -24,7 +24,7 @@ p.set_y(10)
 p.set_dx(.1)
 p.set_source_x(5)
 p.set_source_y(5)
-p.set_tmax(10000)
+p.set_tmax(1000)
 
 #small example with bass reflex housing
 p.add_obj(Line(1, 1, 6, 1))  # bottom
