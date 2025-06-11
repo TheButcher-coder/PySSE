@@ -9,9 +9,16 @@ p = piss.PySSe()
 p.set_x(10)
 p.set_y(10)
 p.set_dx(.1)
+p.set_source_x(5)
+p.set_source_y(5)
+p.set_tmax(250)
 
-p.add_obj(circ(0, 0, 3, 1/2*np.pi))
-p.add_obj(Line(0, 4, 4, 0))
+#small example with bass reflex housing
+p.add_obj(Line(1, 1, 6, 1))  # bottom
+p.add_obj(Line(6, 2, 6, 6))  # right side
+p.add_obj(Line(6, 2, 2, 2))  # tube
+p.add_obj(Line(6, 6, 1, 6))  # top
+p.add_obj(Line(1, 6, 1, 1))  # left side
 p.add_mic(30, 30)
 
 p.run_sim()

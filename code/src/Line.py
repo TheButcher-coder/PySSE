@@ -43,6 +43,7 @@ class Line:
         """
         Get the points of the line.
         """
+
         if self.x1 < self.x2:
             x_vals = np.arange(self.x1, self.x2, dx)
         else:
@@ -52,6 +53,11 @@ class Line:
             y_vals = np.arange(self.y1, self.y2, dx)
         else:
             y_vals = np.flip(np.arange(self.y2, self.y1, dx))
+
+        if self.x1 == self.x2:
+            x_vals = np.ones(len(y_vals)) * self.x1
+        elif self.y1 == self.y2:
+            y_vals = np.ones(len(x_vals)) * self.x2
 
         return x_vals, y_vals
 

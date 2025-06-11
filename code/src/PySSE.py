@@ -22,13 +22,38 @@ class PySSe:
         self.y=100   #ysize of container
         self.dx=0.1  #resolution of grid
         self.v_sound = 343  #speed of sound m/s
-        self.steps = 100  #number of time steps
+        #self.steps = 100  #number of time steps
         #self.dt=0  #time step
         self.dt = self.dx/(np.sqrt(2) * self.v_sound)  # CFL-Bedingung
         self.objects = []  #list of objects in the container
+
+        self.source_x = 0  # x-coordinate of the source
+        self.source_y = 0  # y-coordinate of the source
+
+        self.tmax = 10
         pass
 
-    #write getters and setters for all attributes
+    #write getters and setters for tmax
+    def get_tmax(self):
+        return self.tmax
+
+    def set_tmax(self, tmax):
+        self.tmax = tmax
+
+    #write getters and setters for source_x and source_y
+    def get_source_x(self):
+        return self.source_x
+
+    def set_source_x(self, source_x):
+        self.source_x = source_x
+
+    def get_source_y(self):
+        return self.source_y
+
+    def set_source_y(self, source_y):
+        self.source_y = source_y
+
+    #write getters and setters for the container attributes
     def get_x(self):
         return self.x
 
@@ -125,14 +150,14 @@ class PySSe:
         p_new = np.zeros((nx, ny))
 
         # Position der Quelle
-        i_source = nx // 2
-        j_source = ny // 2
+        i_source = int(self.source_x//self.dx)
+        j_source = int(self.source_y//self.dx)
 
         # Quelle darf nicht in solidem Objekt sein
         if solid_mask[i_source, j_source]:
             raise ValueError("Quelle befindet sich in einem Objekt!")
 
-        for t in range(self.steps):
+        for t in range(self.tmax):
             for i in range(1, nx - 1):
                 for j in range(1, ny - 1):
                     # Wellengleichung lösen
