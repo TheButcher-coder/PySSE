@@ -133,7 +133,7 @@ class PySSe:
         v_m[1] = -v_m[1]
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
-    def run_sim(self, vis_flag=True):
+    def run_sim(self, inp_fun=lambda t:np.sin(2*np.pi*t), plot=True):
         # Korrekte Gitterdimensionen berechnen
         nx = int(self.x / self.dx)
         ny = int(self.y / self.dx)
@@ -168,8 +168,8 @@ class PySSe:
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
             # Quelle anregen (nur in den ersten 5 Schritten)
-            if t < 100:
-                p_new[i_source, j_source] += np.sin(2 * np.pi * 5 * self.dt * t)
+
+            p_new[i_source, j_source] += inp_fun(t/self.dt)
 
             # Druck in soliden Bereichen auf Null setzen
             p_new[solid_mask] = 0
@@ -178,7 +178,7 @@ class PySSe:
             p_old, p = p, p_new.copy()
 
              #Visualisierung
-            if t % 5 == 0 and vis_flag:
+            if t % 5 == 0 and plot:
                 plt.cla()
                 plt.imshow(p.T, cmap='RdBu', vmin=-0.01, vmax=0.01, origin='lower')
                 plt.title(f"t = {t}")
@@ -191,6 +191,8 @@ class PySSe:
 
         plt.show()
         return
+
+
 
     def add_mic(self, x, y):
         self.mic = Mic.Mic(x, y)
@@ -210,8 +212,30 @@ class PySSe:
         """
         if hasattr(self, 'mic'):
             t = np.arange(len(self.mic.get_data())) * self.dt
-            fft_result, freq = self.mic.get_frequency(t)
-            return fft_result, freq/self.dt
+            fft_result, freq = self.mic.get_frequency(t, self.dt)
+            return fft_result, freq
         else:
             print("No microphone data to analyze.")
             return None, None
+
+
+    def sweep(self, f_start, f_end, n_steps):
+        """
+        Perform a frequency sweep from f_start to f_end with n_steps.
+        """
+        f = np.linspace(f_start, f_end, n_steps)
+        data = {}
+
+
+        if hasattr(self, 'mic'):
+            for freq in f:
+                inp = lambda t: np.sin(2 * np.pi * freq * t)
+                # Simulate the sound wave at the current frequency
+                self.run_sim(inp_fun=inp, plot=False)
+                # Reset microphone data for each frequency
+                data[freq] = self.mic.reset_data()
+            return data
+        else:
+            print("No microphone data to perform a sweep.")
+            return None
+

@@ -7,6 +7,17 @@ from src.circ import circ
 from src.rec import rec
 
 
+def delta(t):
+    """
+    Delta function for the source.
+    """
+    amp = 1
+    if t == 0:
+        return amp
+    else:
+        return 0
+
+
 p = piss.PySSe()
 p.set_x(10)
 p.set_y(10)
@@ -23,9 +34,10 @@ p.add_obj(Line(6, 6, 1, 6))  # top
 p.add_obj(Line(1, 6, 1, 1))  # left side
 p.add_mic(70, 15)
 
-test = p.sweep(0, 100, 101)
+p.run_sim(inp_fun=delta, plot=False)
+p.plot_mic_data()
+data, freq = p.get_freq()
 
-for key, data in test.items():
-    plt.plot(data, label=key)
-plt.legend()
+plt.plot(freq, data)
+plt.grid()
 plt.show()

@@ -39,11 +39,22 @@ class Mic:
         plt.grid()
         plt.show()
 
-    def get_frequency(self, t):
+    def get_frequency(self, t, dt):
         fft_result = np.fft.fft(self.data)
-        freq = np.fft.fftfreq(t.shape[-1])
+        freq = np.fft.fftfreq(t.shape[-1], d=dt)
 
         #plt.plot(freq, np.abs(fft_result))
         #plt.show()
         return fft_result, freq
 
+    def reset_data(self):
+        """
+        Reset the microphone data.
+        """
+        temp = self.data.copy()
+        if hasattr(self, 'data'):
+            self.data = np.array([])
+        else:
+            print("No microphone data to reset.")
+
+        return temp
