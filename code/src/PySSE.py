@@ -133,7 +133,7 @@ class PySSe:
         v_m[1] = -v_m[1]
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
-    def run_sim(self):
+    def run_sim(self, vis_flag=True):
         # Korrekte Gitterdimensionen berechnen
         nx = int(self.x / self.dx)
         ny = int(self.y / self.dx)
@@ -177,8 +177,8 @@ class PySSe:
             # Felder aktualisieren
             p_old, p = p, p_new.copy()
 
-            # Visualisierung
-            if t % 5 == 0:
+             #Visualisierung
+            if t % 5 == 0 and vis_flag:
                 plt.cla()
                 plt.imshow(p.T, cmap='RdBu', vmin=-0.01, vmax=0.01, origin='lower')
                 plt.title(f"t = {t}")
@@ -211,7 +211,7 @@ class PySSe:
         if hasattr(self, 'mic'):
             t = np.arange(len(self.mic.get_data())) * self.dt
             fft_result, freq = self.mic.get_frequency(t)
-            return fft_result, freq
+            return fft_result, freq/self.dt
         else:
             print("No microphone data to analyze.")
             return None, None

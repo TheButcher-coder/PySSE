@@ -13,7 +13,7 @@ p.set_y(10)
 p.set_dx(.1)
 p.set_source_x(5)
 p.set_source_y(5)
-p.set_tmax(1000)
+p.set_tmax(500 )
 
 #small example with bass reflex housing
 p.add_obj(Line(1, 1, 6, 1))  # bottom
@@ -23,7 +23,7 @@ p.add_obj(Line(6, 6, 1, 6))  # top
 p.add_obj(Line(1, 6, 1, 1))  # left side
 p.add_mic(70, 15)
 
-p.run_sim()
+p.run_sim(vis_flag=False)  # run simulation without plotting
 p.plot_mic_data()
 
 res, freq = p.get_freq()
