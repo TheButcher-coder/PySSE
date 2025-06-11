@@ -43,20 +43,29 @@ class Line:
         """
         Get the points of the line.
         """
-        x_vals = np.arange(self.x1, self.x2, dx)
-        y_vals = np.arange(self.y1, self.y2, dx)
+        if self.x1 < self.x2:
+            x_vals = np.arange(self.x1, self.x2, dx)
+        else:
+            x_vals = np.flip(np.arange(self.x2, self.x1, dx))
+
+        if self.y1 < self.y2:
+            y_vals = np.arange(self.y1, self.y2, dx)
+        else:
+            y_vals = np.flip(np.arange(self.y2, self.y1, dx))
+
         return x_vals, y_vals
 
 
-    def print(self, c):
+    def print(self, c, dx):
         """
         Plot the line from point 1 to point 2 with the specified color.
         """
-        plt.plot([self.x1, self.x2], [self.y1, self.y2], color=c)
+        plt.plot([self.x1/dx, self.x2/dx], [self.y1/dx, self.y2/dx], color=c)
 
     def get_mask(self, nx, ny, dx):
         mask = np.zeros((nx, ny), dtype=bool)
         x_points, y_points = self.get_points(dx)
+        #print((zip(x_points, y_points)))
         for x, y in zip(x_points, y_points):
             i = int(x / dx)
             j = int(y / dx)

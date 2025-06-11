@@ -44,14 +44,14 @@ class circ:
         y_vals = self.y + self.r * np.sin(phi + self.rot)
         return x_vals, y_vals
 
-    def print(self, c):
+    def print(self, c, dx):
         """
         Plot the circle (or part of it) with the specified color.
         """
         phi = np.linspace(0, self.dphi, 100)  # Generate angles from 0 to dphi
         x_vals = self.x + self.r * np.cos(phi + self.rot)  # x-coordinates
         y_vals = self.y + self.r * np.sin(phi + self.rot)  # y-coordinates
-        plt.plot(x_vals, y_vals, color=c)
+        plt.plot(x_vals/dx, y_vals/dx, color=c)
 
 
     def get_mask(self, nx, ny, dx):

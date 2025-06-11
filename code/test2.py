@@ -10,7 +10,8 @@ p.set_x(10)
 p.set_y(10)
 p.set_dx(.1)
 
-p.add_obj(circ(0, 0, 3, 2*np.pi))
+p.add_obj(circ(0, 0, 3, 1/2*np.pi))
+p.add_obj(Line(0, 4, 4, 0))
 p.add_mic(30, 30)
 
 p.run_sim()
