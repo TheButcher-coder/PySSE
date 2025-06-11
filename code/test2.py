@@ -19,7 +19,7 @@ p.add_obj(Line(6, 2, 6, 6))  # right side
 p.add_obj(Line(6, 2, 2, 2))  # tube
 p.add_obj(Line(6, 6, 1, 6))  # top
 p.add_obj(Line(1, 6, 1, 1))  # left side
-p.add_mic(30, 30)
+p.add_mic(70, 30)
 
 p.run_sim()
 p.plot_mic_data()

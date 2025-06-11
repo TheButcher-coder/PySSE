@@ -168,8 +168,8 @@ class PySSe:
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
             # Quelle anregen (nur in den ersten 5 Schritten)
-            if t < 5:
-                p_new[i_source, j_source] += np.sin(2 * np.pi * 500 * self.dt * t)
+            if t < 10:
+                p_new[i_source, j_source] += np.sin(2 * np.pi * 5 * self.dt * t)
 
             # Druck in soliden Bereichen auf Null setzen
             p_new[solid_mask] = 0
