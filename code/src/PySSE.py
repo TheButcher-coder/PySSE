@@ -153,6 +153,26 @@ class PySSe:
             obj_mask = obj.get_mask(nx, ny, self.dx)
             solid_mask = np.logical_or(solid_mask, obj_mask)
 
+        # Dämpfungsschicht
+        damping_mask = np.ones((nx, ny))
+        damping_width = 20  # Breite der Dämpfungsschicht (Zellen)
+
+        for i in range(nx):
+            for j in range(ny):
+                damping_factor = 1.0
+                if i < damping_width:
+                    damping_factor *= (i / damping_width)
+                elif i > nx - damping_width:
+                    damping_factor *= ((nx - i) / damping_width)
+
+                if j < damping_width:
+                    damping_factor *= (j / damping_width)
+                elif j > ny - damping_width:
+                    damping_factor *= ((ny - j) / damping_width)
+
+                damping_mask[i, j] = damping_factor
+
+
         # Druckfelder initialisieren
         p = np.zeros((nx, ny))
         p_old = np.zeros((nx, ny))
@@ -184,7 +204,7 @@ class PySSe:
 
             # Druck in soliden Bereichen auf Null setzen
             p_new[solid_mask] = 0
-
+            p_new *= damping_mask   # außenbereich dämpfen
             # Felder aktualisieren
             p_old, p = p, p_new.copy()
 
