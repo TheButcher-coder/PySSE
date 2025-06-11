@@ -43,8 +43,15 @@ datay = np.fft.fft(y)
 fy = np.fft.fftfreq(y.shape[-1], d=p.get_dt())
 
 G = datay / datax
-plt.semilogx(fx, 20* np.log10(np.abs(G)), label='Gain')
+plt.subplot(2, 1, 1)
+plt.semilogx(fx, 20*np.log10(np.abs(G)), label='Gain')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Gain (dB)')
+plt.grid()
+
+plt.subplot(2, 1, 2)
+plt.semilogx(fx, 180/np.pi*np.angle(G), label='Phase')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Phase (Deg)')
 plt.grid()
 plt.show()
