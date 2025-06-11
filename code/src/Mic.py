@@ -38,3 +38,12 @@ class Mic:
         plt.plot(self.data)
         plt.grid()
         plt.show()
+
+    def get_frequency(self, t):
+        fft_result = np.fft.fft(self.data)
+        freq = np.fft.fftfreq(t.shape[-1])
+
+        #plt.plot(freq, np.abs(fft_result))
+        #plt.show()
+        return fft_result, freq
+

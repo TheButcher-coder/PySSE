@@ -168,7 +168,7 @@ class PySSe:
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
             # Quelle anregen (nur in den ersten 5 Schritten)
-            if t < 10:
+            if t < 100:
                 p_new[i_source, j_source] += np.sin(2 * np.pi * 5 * self.dt * t)
 
             # Druck in soliden Bereichen auf Null setzen
@@ -203,3 +203,15 @@ class PySSe:
             self.mic.plot_data()
         else:
             print("No microphone data to plot.")
+
+    def get_freq(self):
+        """
+        Get the frequency spectrum of the microphone data.
+        """
+        if hasattr(self, 'mic'):
+            t = np.arange(len(self.mic.get_data())) * self.dt
+            fft_result, freq = self.mic.get_frequency(t)
+            return fft_result, freq
+        else:
+            print("No microphone data to analyze.")
+            return None, None
