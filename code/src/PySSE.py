@@ -154,8 +154,8 @@ class PySSe:
             solid_mask = np.logical_or(solid_mask, obj_mask)
 
         # Dämpfungsschicht
-        damping_mask = np.ones((nx, ny))
-        damping_width = 20  # Breite der Dämpfungsschicht (Zellen)
+        damping_mask = np.ones((nx, ny))*5
+        damping_width = 5  # Breite der Dämpfungsschicht (Zellen)
 
         for i in range(nx):
             for j in range(ny):
