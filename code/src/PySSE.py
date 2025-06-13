@@ -3,7 +3,7 @@ from . import Line
 from . import circ
 from . import rec
 from . import Mic as Mic
-
+from . import speaker_line
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -133,7 +133,7 @@ class PySSe:
         v_m[1] = -v_m[1]
         return np.linalg.inv(T)@v_m     #transform back to global system and return
 
-    def run_sim(self, inp_fun=lambda t:np.sin(2*np.pi*t), plot=True):
+    def run_sim(self, inp_fun=None, plot=True):
         '''
         Runs the simulation of the sound wave propagation in the container.
         :param inp_fun:
@@ -150,8 +150,16 @@ class PySSe:
         # Maske für solide Objekte erstellen
         solid_mask = np.zeros((nx, ny), dtype=bool)
         for obj in self.objects:
+            #if not isinstance(obj, speaker_line.speaker_line):
             obj_mask = obj.get_mask(nx, ny, self.dx)
             solid_mask = np.logical_or(solid_mask, obj_mask)
+
+        #Maske für Lautsprecher erstellen
+        speaker_mask = np.zeros((nx, ny), dtype=bool)
+        for obj in self.objects:
+            if isinstance(obj, speaker_line.speaker_line):
+                obj_mask = obj.get_mask(nx, ny, self.dx)
+                speaker_mask = np.logical_or(speaker_mask, obj_mask)
 
         # Dämpfungsschicht
         damping_mask = np.ones((nx, ny))*5
@@ -197,9 +205,10 @@ class PySSe:
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
             # Quelle anregen (nur in den ersten 5 Schritten)
-            temp = inp_fun(t/self.dt)
-            p_new[i_source, j_source] += temp
-            inp_vec = np.append(inp_vec, temp)
+            if inp_fun is not None:
+                temp = inp_fun(t/self.dt)
+                p_new[i_source, j_source] += temp
+                #inp_vec = np.append(inp_vec, temp)
 
 
             # Druck in soliden Bereichen auf Null setzen
@@ -207,6 +216,11 @@ class PySSe:
             p_new *= damping_mask   # außenbereich dämpfen
             # Felder aktualisieren
             p_old, p = p, p_new.copy()
+
+            for obj in self.objects:
+                if isinstance(obj, speaker_line.speaker_line):
+                    inp_vec = np.append(inp_vec, obj.get_p(t / self.dt))
+                    p_new[speaker_mask] += obj.get_p(t / self.dt)
 
              #Visualisierung
             if t % 5 == 0 and plot:
