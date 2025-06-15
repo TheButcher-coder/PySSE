@@ -217,11 +217,11 @@ class PySSe:
                 if isinstance(obj, speaker_line.speaker_line):
                     temp = obj.get_p(t / self.dt)
                     inp_vec = np.append(inp_vec, temp)
-                    print(f"[t={t}] temp={temp:.5f}, active speaker cells: {np.sum(speaker_mask)}")
+                    #print(f"[t={t}] temp={temp:.5f}, active speaker cells: {np.sum(speaker_mask)}")
 
                     p_new[speaker_mask] += temp
 
-
+            print(f"[t={t}])")
             #p_new *= damping_mask   # außenbereich dämpfen
             # Felder aktualisieren
             p_old, p = p, p_new.copy()

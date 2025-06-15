@@ -9,7 +9,7 @@ class speaker_line(Line.Line):
 
     def __init__(self, x1, y1, x2, y2):
         super().__init__(x1, y1, x2, y2)
-        self.amp = 1000  # Amplitude of the source
+        self.amp = 10  # Amplitude of the source
 
     def get_p(self, t):
         """

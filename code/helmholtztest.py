@@ -12,8 +12,8 @@ p.set_dx(.01)
 p.set_x(1)
 p.set_y(1)
 
-p.set_dt(.01)
-p.set_tmax(500)
+#p.set_dt(.01)
+p.set_tmax(1000)
 
 p.set_source_x(.4)
 p.set_source_y(.4)
@@ -27,10 +27,10 @@ p.add_obj(Line(.1, .4, .2, 0.4))
 
 p.add_obj(speaker_line(0, .25, .2, .25))
 
-p.add_mic(.4, .25)
+p.add_mic(.75, .25)
 
 
-x = p.run_sim(plot=True)
+x = p.run_sim(plot=False)
 y = p.get_mic_data()
 
 datax = np.fft.fft(x)
@@ -42,6 +42,8 @@ datay = np.fft.fft(y)
 G = datay / datax
 angle = (np.angle(G))
 
+while angle[0] == 0:
+    np.roll(angle, -1)
 plt.subplot(2, 1, 1)
 plt.semilogx(fx, 20*np.log10(np.abs(G)), label='Gain')
 plt.xlabel('Frequency (Hz)')
