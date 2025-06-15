@@ -32,7 +32,8 @@ p.add_mic(.75, .25)
 
 x = p.run_sim(plot=False)
 y = p.get_mic_data()
-
+while y[0] == 0:
+    np.roll(y, -1)
 datax = np.fft.fft(x)
 fx = np.fft.fftfreq(x.shape[-1], d=p.get_dt())
 #fx = np.unwrap(np.angle(datax))
@@ -42,8 +43,7 @@ datay = np.fft.fft(y)
 G = datay / datax
 angle = (np.angle(G))
 
-while angle[0] == 0:
-    np.roll(angle, -1)
+
 plt.subplot(2, 1, 1)
 plt.semilogx(fx, 20*np.log10(np.abs(G)), label='Gain')
 plt.xlabel('Frequency (Hz)')
