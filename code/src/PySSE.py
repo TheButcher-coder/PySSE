@@ -150,9 +150,9 @@ class PySSe:
         # Maske für solide Objekte erstellen
         solid_mask = np.zeros((nx, ny), dtype=bool)
         for obj in self.objects:
-            #if not isinstance(obj, speaker_line.speaker_line):
-            obj_mask = obj.get_mask(nx, ny, self.dx)
-            solid_mask = np.logical_or(solid_mask, obj_mask)
+            if not isinstance(obj, speaker_line.speaker_line):
+                obj_mask = obj.get_mask(nx, ny, self.dx)
+                solid_mask = np.logical_or(solid_mask, obj_mask)
 
         #Maske für Lautsprecher erstellen
         speaker_mask = np.zeros((nx, ny), dtype=bool)
@@ -163,7 +163,7 @@ class PySSe:
 
         # Dämpfungsschicht
         damping_mask = np.ones((nx, ny))*5
-        damping_width = 5  # Breite der Dämpfungsschicht (Zellen)
+        damping_width = 1  # Breite der Dämpfungsschicht (Zellen)
 
         for i in range(nx):
             for j in range(ny):
@@ -210,6 +210,11 @@ class PySSe:
                 p_new[i_source, j_source] += temp
                 #inp_vec = np.append(inp_vec, temp)
 
+            for obj in self.objects:
+                if isinstance(obj, speaker_line.speaker_line):
+                    inp_vec = np.append(inp_vec, obj.get_p(t / self.dt))
+                    temp = obj.get_p(t / self.dt)
+                    p_new[speaker_mask] += temp
 
             # Druck in soliden Bereichen auf Null setzen
             p_new[solid_mask] = 0
@@ -217,10 +222,7 @@ class PySSe:
             # Felder aktualisieren
             p_old, p = p, p_new.copy()
 
-            for obj in self.objects:
-                if isinstance(obj, speaker_line.speaker_line):
-                    inp_vec = np.append(inp_vec, obj.get_p(t / self.dt))
-                    p_new[speaker_mask] += obj.get_p(t / self.dt)
+
 
              #Visualisierung
             if t % 5 == 0 and plot:
@@ -232,7 +234,7 @@ class PySSe:
 
                 plt.pause(0.01)
 
-            self.mic.add_data(p[self.mic.get_x(), self.mic.get_y()])
+            self.mic.add_data(p[int(self.mic.get_x()), int(self.mic.get_y())])
 
         plt.show()
         return inp_vec
@@ -240,7 +242,7 @@ class PySSe:
 
 
     def add_mic(self, x, y):
-        self.mic = Mic.Mic(x, y)
+        self.mic = Mic.Mic(x/self.dx, y/self.dx)
 
     def plot_mic_data(self):
         """
@@ -293,3 +295,50 @@ class PySSe:
         else:
             print("No microphone data available.")
             return None
+
+
+    #calculative help functions
+    def get_res_box(self, l):
+        """
+        Get the resonance of the box.
+        :param l: length of the box
+        :return: ronance freq of the box
+        """
+        return self.v_sound/(4*l)
+
+    def get_len_res(self, f):
+        """
+        Get the length of the box for a given resonance frequency.
+        :param f: resonance frequency
+        :return: length of the box
+        """
+        return self.v_sound/(4*f)
+
+    def get_helmholtz_freq(self, l, a, v):
+        """
+        Calculate the Helmholtz frequency.
+        :param l: length of the tube
+        :param a: cross-sectional area of the tube
+        :param v: volume of the box
+        :return: Helmholtz frequency
+        """
+        return self.v_sound / (2 * np.pi) * np.sqrt(a / (v * l))
+
+    def liter_to_m3(self, liters):
+        """
+        Convert liters to cubic meters.
+        :param liters: volume in liters
+        :return: volume in cubic meters
+        """
+        return liters / 1000.0
+
+    def get_helmholtz_len(self, f, a, v):
+        """
+        Calculate the length of the tube for a given Helmholtz frequency.
+        :param f: Helmholtz frequency
+        :param a: cross-sectional area of the tube in m^2
+        :param v: volume of the box in m^3
+        :return: length of the tube
+        """
+        v = self.liter_to_m3(v)
+        return (self.v_sound/(2*np.pi))**2 * a/(f**2*v)

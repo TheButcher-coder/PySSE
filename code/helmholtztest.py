@@ -7,38 +7,28 @@ from src.circ import circ
 from src.rec import rec
 from src.speaker_line import speaker_line
 
-
-def delta(t):
-    """
-    Delta function for the source.
-    """
-    amp = 1000
-    if t == 0:
-        return amp
-    else:
-        return 0
-
-
 p = piss.PySSe()
-print(p.get_helmholtz_len(60, 0.008, 40))
-p.set_x(10)
-p.set_y(10)
-p.set_dx(.1)
-p.set_source_x(5)
-p.set_source_y(5)
-p.set_tmax(500)
+p.set_dx(.01)
+p.set_x(1)
+p.set_y(1)
 
-#small example with bass reflex housing
-#p.add_obj(Line(1, 1, 6, 1))  # bottom
+p.set_dt(.01)
+p.set_tmax(1000)
 
-#p.add_obj(Line(6, 2, 6, 3))  # right side
-p.add_obj(speaker_line(6, 3, 6, 5))
-#p.add_obj(Line(6, 5, 6, 6))
+p.set_source_x(.4)
+p.set_source_y(.4)
 
-#p.add_obj(Line(6, 2, 2, 2))  # tube
-#p.add_obj(Line(6, 6, 1, 6))  # top
-#p.add_obj(Line(1, 6, 1, 1))  # left side
-p.add_mic(70, 15)
+p.add_obj(Line(0, 0, 0, 0.5))  # left
+p.add_obj(Line(0, .5, .2, 0.5))
+p.add_obj(Line(0, 0, .2, 0))
+p.add_obj(Line(.2, .1, .2, 0.4))
+p.add_obj(Line(.1, .1, .2, .1))
+p.add_obj(Line(.1, .4, .2, 0.4))
+
+p.add_obj(speaker_line(0, .25, .2, .25))
+
+p.add_mic(.4, .25)
+
 
 x = p.run_sim(plot=False)
 y = p.get_mic_data()
@@ -60,4 +50,7 @@ plt.semilogx(fx, 180/np.pi*np.angle(G), label='Phase')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Phase (Deg)')
 plt.grid()
+plt.show()
+
+p.print()
 plt.show()
