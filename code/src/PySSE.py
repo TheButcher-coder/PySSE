@@ -158,12 +158,13 @@ class PySSe:
         speaker_mask = np.zeros((nx, ny), dtype=bool)
         for obj in self.objects:
             if isinstance(obj, speaker_line.speaker_line):
-                obj_mask = obj.get_mask(nx, ny, self.dx)
+                speaker_mask = obj.get_mask(nx, ny, self.dx)
                 speaker_mask = np.logical_or(speaker_mask, obj_mask)
 
         # Dämpfungsschicht
         damping_mask = np.ones((nx, ny))*5
         damping_width = 1  # Breite der Dämpfungsschicht (Zellen)
+        print("Overlap speaker & solid:", np.sum(np.logical_and(speaker_mask, solid_mask)))
 
         for i in range(nx):
             for j in range(ny):
@@ -204,6 +205,8 @@ class PySSe:
                     p_new[i, j] = (2 * p[i, j] - p_old[i, j] +
                                    self.v_sound ** 2 * self.dt ** 2 * laplacian)
 
+            # Druck in soliden Bereichen auf Null setzen
+            p_new[solid_mask] = 0
             # Quelle anregen (nur in den ersten 5 Schritten)
             if inp_fun is not None:
                 temp = inp_fun(t/self.dt)
@@ -212,13 +215,14 @@ class PySSe:
 
             for obj in self.objects:
                 if isinstance(obj, speaker_line.speaker_line):
-                    inp_vec = np.append(inp_vec, obj.get_p(t / self.dt))
                     temp = obj.get_p(t / self.dt)
+                    inp_vec = np.append(inp_vec, temp)
+                    print(f"[t={t}] temp={temp:.5f}, active speaker cells: {np.sum(speaker_mask)}")
+
                     p_new[speaker_mask] += temp
 
-            # Druck in soliden Bereichen auf Null setzen
-            p_new[solid_mask] = 0
-            p_new *= damping_mask   # außenbereich dämpfen
+
+            #p_new *= damping_mask   # außenbereich dämpfen
             # Felder aktualisieren
             p_old, p = p, p_new.copy()
 

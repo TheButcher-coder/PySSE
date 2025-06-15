@@ -38,9 +38,10 @@ x = p.run_sim(inp_fun=delta, plot=False)
 y = p.get_mic_data()
 
 datax = np.fft.fft(x)
-fx = np.fft.fftfreq(x.shape[-1], d=p.get_dt())
+#fx = np.fft.fftfreq(x.shape[-1], d=p.get_dt())
+fx = np.unwrap(np.angle(datax))
 datay = np.fft.fft(y)
-fy = np.fft.fftfreq(y.shape[-1], d=p.get_dt())
+#fy = np.fft.fftfreq(y.shape[-1], d=p.get_dt())
 
 G = datay / datax
 plt.subplot(2, 1, 1)
