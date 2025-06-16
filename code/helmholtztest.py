@@ -8,12 +8,12 @@ from src.rec import rec
 from src.speaker_line import speaker_line
 
 p = piss.PySSe()
-p.set_dx(.01)
+p.set_dx(.001)
 p.set_x(1)
 p.set_y(1)
 
 #p.set_dt(.01)
-p.set_tmax(1000)
+p.set_tmax(200)
 
 p.set_source_x(.4)
 p.set_source_y(.4)
@@ -22,8 +22,8 @@ p.add_obj(Line(0, 0, 0, 0.5))  # left
 p.add_obj(Line(0, .5, .2, 0.5))
 p.add_obj(Line(0, 0, .2, 0))
 p.add_obj(Line(.2, .1, .2, 0.4))
-p.add_obj(Line(.1, .1, .2, .1))
-p.add_obj(Line(.1, .4, .2, 0.4))
+p.add_obj(Line(.05, .1, .2, .1))
+p.add_obj(Line(.05, .4, .2, 0.4))
 
 p.add_obj(speaker_line(0, .25, .2, .25))
 
@@ -33,7 +33,7 @@ p.add_mic(.75, .25)
 x = p.run_sim(plot=False)
 y = p.get_mic_data()
 while y[0] == 0:
-    np.roll(y, -1)
+    y = np.roll(y, -1)
 datax = np.fft.fft(x)
 fx = np.fft.fftfreq(x.shape[-1], d=p.get_dt())
 #fx = np.unwrap(np.angle(datax))
