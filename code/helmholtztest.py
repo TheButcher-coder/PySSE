@@ -30,7 +30,7 @@ p.add_obj(speaker_line(0, .25, .2, .25))
 p.add_mic(.75, .25)
 
 
-x = p.run_sim(plot=True)
+x = p.run_sim(plot=False)
 y = p.get_mic_data()
 while y[0] == 0:
     y = np.roll(y, -1)

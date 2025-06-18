@@ -35,7 +35,7 @@ class Mic:
 
     def plot_data(self):
         """PLot the microphone's data."""
-        plt.plot(self.data)
+        plt.plot(self.data/self.dx)
         plt.grid()
         plt.show()
 
