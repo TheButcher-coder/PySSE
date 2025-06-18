@@ -101,6 +101,7 @@ class PySSe:
         #prints the objects in the container
         for obj in self.objects:
             obj.print('blue', self.dx)
+        plt.axis('equal')
         #plt.show()
 
     def get_angle(self, v1, v2):

@@ -8,12 +8,12 @@ from src.rec import rec
 from src.speaker_line import speaker_line
 
 p = piss.PySSe()
-p.set_dx(.001)
+p.set_dx(.01)
 p.set_x(1)
 p.set_y(1)
 
 #p.set_dt(.01)
-p.set_tmax(200)
+p.set_tmax(1000)
 
 p.set_source_x(.4)
 p.set_source_y(.4)

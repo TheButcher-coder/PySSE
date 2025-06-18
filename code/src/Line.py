@@ -66,7 +66,7 @@ class Line:
         """
         Plot the line from point 1 to point 2 with the specified color.
         """
-        plt.plot([self.x1/dx, self.x2/dx], [self.y1/dx, self.y2/dx], color=c)
+        plt.plot([self.x1, self.x2], [self.y1, self.y2], color=c)
 
     def get_mask(self, nx, ny, dx):
         mask = np.zeros((nx, ny), dtype=bool)
