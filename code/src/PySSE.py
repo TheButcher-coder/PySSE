@@ -247,7 +247,7 @@ class PySSe:
 
 
     def add_mic(self, x, y):
-        self.mic = Mic.Mic(x/self.dx, y/self.dx)
+        self.mic = Mic.Mic(x, y)
 
     def plot_mic_data(self):
         """
