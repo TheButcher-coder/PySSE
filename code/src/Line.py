@@ -62,6 +62,7 @@ class Line:
         return x_vals, y_vals
 
 
+
     def print(self, c, dx):
         """
         Plot the line from point 1 to point 2 with the specified color.

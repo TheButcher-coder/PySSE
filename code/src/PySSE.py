@@ -103,6 +103,7 @@ class PySSe:
         #prints the objects in the container
         for obj in self.objects:
             obj.print('blue', self.dx)
+        plt.axis('equal')
         #plt.show()
 
     def get_angle(self, v1, v2):
@@ -235,7 +236,7 @@ class PySSe:
                 plt.cla()
                 plt.imshow(p.T, cmap='RdBu', vmin=-0.01, vmax=0.01, origin='lower')
                 plt.title(f"t = {t}")
-                plt.plot(self.mic.get_x(), self.mic.get_y(), 'ro')  # Plot microphone position
+                plt.plot(self.mic.get_x()/self.dx, self.mic.get_y()/self.dx, 'ro')  # Plot microphone position
                 self.print()
 
                 plt.pause(0.01)
@@ -248,7 +249,7 @@ class PySSe:
 
 
     def add_mic(self, x, y):
-        self.mic = Mic.Mic(x/self.dx, y/self.dx)
+        self.mic = Mic.Mic(x, y)
 
     def plot_mic_data(self):
         """
