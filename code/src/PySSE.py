@@ -6,6 +6,8 @@ from . import Mic as Mic
 from . import speaker_line
 import numpy as np
 import matplotlib.pyplot as plt
+import xml.etree.ElementTree as ET
+from svgpathtools import svg2paths
 
 
 class PySSe:
@@ -346,3 +348,20 @@ class PySSe:
         """
         v = self.liter_to_m3(v)
         return (self.v_sound/(2*np.pi))**2 * a/(f**2*v)
+
+    def read_svg(self, filename):
+        """
+        Read a svg file and make a speakerbox from it
+        :param filename: path to the CSV file
+        """
+        paths, attributes = svg2paths(filename)
+        line_segments = []
+
+        for path in paths:
+            for segment in path:
+                if segment.__class__.__name__ == 'Line':
+                    start = (round(segment.start.real, 3), round(segment.start.imag, 3))
+                    end = (round(segment.end.real, 3), round(segment.end.imag, 3))
+                    line_segments.append((start, end))
+        for idx, (start, end) in enumerate(line_segments):
+            print(f"Linie {idx + 1}: von {start} nach {end}")
